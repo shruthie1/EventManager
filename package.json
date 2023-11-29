@@ -14,7 +14,7 @@
     "prettier:write": "prettier --write src/**/*.{ts,tsx,jsx}",
     "test": "npm run prettier:check && npm run test:unit && npm audit",
     "build": "npm run build:server",
-    "build:server": "tsc tsconfig.json"
+    "build:server": "tsc"
   },
   "dependencies": {
     "compression": "^1.7.4",
