@@ -28,9 +28,36 @@ export default class EventsService {
         }
     }
 
+    public async createMultiple(events: MyEvent[]) {
+        try {
+            events.map(async event => {
+                const eventToSave = {
+                    time: event.time,
+                    type: event.type,
+                    profile: event.profile,
+                    payload: event.payload,
+                }
+                await this.create(eventToSave);
+            });
+        } catch (error) {
+            console.error('Error saving events in service:', error);
+            throw error;
+        }
+    }
+
     public async getEvents(filter: {}) {
         try {
             const result = await this.collection.find(filter).toArray();
+            console.log(result)
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async getEventById(id: string) {
+        try {
+            const result = await this.collection.findOne({ _id: new ObjectId(id) });
             console.log(result)
             return result;
         } catch (error) {

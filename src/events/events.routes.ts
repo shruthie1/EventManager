@@ -1,5 +1,7 @@
 import * as express from 'express';
 import EventController from './events.controller';
+import { noCache } from '../middlewares/NoCacheMiddleware'
+import * as RateLimit from 'express-rate-limit'
 
 class EventRoutes {
     public router: express.Router;
@@ -13,14 +15,16 @@ class EventRoutes {
     }
 
     private initRoutes(): void {
-        this.router.get('/', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const result = await this.eventController.getAllEvents()
-            res.send({ data: result });
-        });
-        this.router.post('/', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const result = await this.eventController.createEvent(req.body)
-            res.send({ data: result });
-        });
+        const strictRateLimit = RateLimit.default({
+            windowMs: 15 * 60 * 1000, // 15 min in ms
+            max: 200,
+            message: 'This endpoint has a stricter rate limiting of a maximum of 200 requests per 15 minutes window, please lower your request rate'
+        })
+
+        this.router.post('/', noCache, strictRateLimit, this.eventController.createEvent);
+        this.router.post('/createMultiple', noCache, strictRateLimit, this.eventController.createMultiple);
+        this.router.get('/', noCache, strictRateLimit, this.eventController.getAllEvents);
+        this.router.get('/:id', noCache, strictRateLimit, this.eventController.getEventById);
     }
 }
 
