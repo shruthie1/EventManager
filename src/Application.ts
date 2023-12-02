@@ -1,8 +1,6 @@
 import { ExpressServer } from './ExpressServer'
-import { CatEndpoints } from './cats/CatEndpoints'
-import { CatService } from './cats/CatService'
-import { CatRepository } from './cats/CatRepository'
 import { Environment } from './Environment'
+import MongoDB from './mongodb'
 
 /**
  * Wrapper around the Node process, ExpressServer abstraction and complex dependencies such as services that ExpressServer needs.
@@ -10,16 +8,19 @@ import { Environment } from './Environment'
  */
 export class Application {
     public static async createApplication() {
-        const catService = new CatService(new CatRepository())
-        const requestServices = { catService }
-        const expressServer = new ExpressServer(new CatEndpoints(), requestServices)
-
-        await expressServer.setup(Environment.getPort())
-        Application.handleExit(expressServer)
-
-        return expressServer
+        this.connectToDb().then(async (mongoClient) => {
+            console.log("here");
+            const expressServer = new ExpressServer()
+            await expressServer.setup(Environment.getPort())
+            Application.handleExit(expressServer)
+            return expressServer
+        }).catch(e => console.log(e))
     }
 
+    private static async connectToDb() {
+        const mongoClient = MongoDB.getInstance();
+        return await mongoClient.connect();
+    }
     private static handleExit(express: ExpressServer) {
         process.on('uncaughtException', (err: Error) => {
             console.error('Uncaught exception', err)
@@ -46,6 +47,7 @@ export class Application {
         Promise.resolve()
             .then(() => express.kill())
             .then(() => {
+                MongoDB.getInstance().client.close(true);
                 console.info('Shutdown complete')
                 process.exit(exitCode)
             })

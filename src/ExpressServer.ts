@@ -1,33 +1,21 @@
 import * as express from 'express'
-import { Express } from 'express'
+import { Express, json, urlencoded } from 'express'
 import { Server } from 'http'
 import * as compress from 'compression'
-import * as bodyParser from 'body-parser'
+// import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as RateLimit from 'express-rate-limit'
-
 import { noCache } from './middlewares/NoCacheMiddleware'
-import { CatEndpoints } from './cats/CatEndpoints'
-import { RequestServices } from './types/CustomRequest'
-import { addServicesToRequest } from './middlewares/ServiceDependenciesMiddleware'
-import { Environment } from './Environment'
+import eventRoutes from './events/events.routes'
 
-/**
- * Abstraction around the raw Express.js server and Nodes' HTTP server.
- * Defines HTTP request mappings, basic as well as request-mapping-specific
- * middleware chains for application logic, config and everything else.
- */
 export class ExpressServer {
     private server?: Express
     private httpServer?: Server
-
-    constructor(private catEndpoints: CatEndpoints, private requestServices: RequestServices) { }
+    constructor() {}
 
     public async setup(port: number) {
         const server = express()
         this.setupStandardMiddlewares(server)
-        this.setupServiceDependencies(server)
-        this.configureEjsTemplates(server)
         this.configureApiEndpoints(server)
 
         this.httpServer = this.listen(server, port)
@@ -45,9 +33,12 @@ export class ExpressServer {
     }
 
     private setupStandardMiddlewares(server: Express) {
-        server.use(bodyParser.json())
+        // server.use(bodyParser.json())
         server.use(cookieParser())
         server.use(compress())
+        server.use(json());
+        server.use(urlencoded({ extended: true }));
+        server.use('/events', new eventRoutes().router)
 
         const baseRateLimitingOptions = {
             windowMs: 15 * 60 * 1000, // 15 min in ms
@@ -57,26 +48,6 @@ export class ExpressServer {
         server.use('/api/', RateLimit.default(baseRateLimitingOptions))
     }
 
-    private configureEjsTemplates(server: Express) {
-        server.set('views', ['resources/views'])
-        server.set('view engine', 'ejs')
-    }
-
-    private setupServiceDependencies(server: Express) {
-        const servicesMiddleware = addServicesToRequest(this.requestServices)
-        server.use(servicesMiddleware)
-    }
-
-    private configureStaticAssets(server: Express) {
-        if (Environment.isProd()) {
-            server.use([/(.*)\.js\.map$/, '/'], express.static('www/'))
-        } else {
-            server.use('/', express.static('www/'))
-        }
-
-        server.use('/', express.static('resources/img/'))
-    }
-
     private configureApiEndpoints(server: Express) {
         const strictRateLimit = RateLimit.default({
             windowMs: 15 * 60 * 1000, // 15 min in ms
@@ -84,8 +55,11 @@ export class ExpressServer {
             message: 'This endpoint has a stricter rate limiting of a maximum of 200 requests per 15 minutes window, please lower your request rate'
         })
 
-        server.get('/api/cat', noCache, this.catEndpoints.getAllCats)
-        server.get('/api/statistics/cat', noCache, strictRateLimit, this.catEndpoints.getCatsStatistics)
-        server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
+        // server.post('/api/events', noCache, async (req: express.Request, res: express.Response, next: express.NextFunction) => { res.send(await this.eventsService.scheduleEvent(req.body)) })
+        // server.get('/api/events', noCache, strictRateLimit, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        //     const result = await this.eventsService.getEvents({})
+        //     res.json(result)
+        // })
+        // server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
     }
 }
