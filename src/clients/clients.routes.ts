@@ -1,16 +1,16 @@
 import * as express from 'express';
-import EventController from './events.controller';
+import ClientController from './clients.controller';
 import { noCache } from '../middlewares/NoCacheMiddleware'
 import * as RateLimit from 'express-rate-limit'
 
-class EventRoutes {
+class ClientRoutes {
     public router: express.Router;
-    private eventController: EventController;
+    private eventController: ClientController;
 
     constructor() {
-        console.log("initing events Routes");
+        console.log("initing client Routes");
         this.router = express.Router();
-        this.eventController = new EventController();
+        this.eventController = new ClientController();
         this.initRoutes();
     }
 
@@ -21,11 +21,11 @@ class EventRoutes {
             message: 'This endpoint has a stricter rate limiting of a maximum of 200 requests per 15 minutes window, please lower your request rate'
         })
 
-        this.router.post('/', noCache, strictRateLimit, this.eventController.createEvent);
+        this.router.post('/', noCache, strictRateLimit, this.eventController.createClient);
         this.router.post('/createMultiple', noCache, strictRateLimit, this.eventController.createMultiple);
-        this.router.get('/', noCache, strictRateLimit, this.eventController.getAllEvents);
-        this.router.get('/:id', noCache, strictRateLimit, this.eventController.getEventById);
+        this.router.get('/', noCache, strictRateLimit, this.eventController.getAllClients);
+        this.router.get('/:id', noCache, strictRateLimit, this.eventController.getClientById);
     }
 }
 
-export default EventRoutes;
+export default ClientRoutes;

@@ -7,7 +7,7 @@ export default class EventController {
     private eventService: EventService;
     constructor() {
         const mongoClient = MongoDB.getInstance().client
-        this.eventService = new EventService(mongoClient);
+        this.eventService = EventService.getInstance(mongoClient);
     }
 
     async getAllEvents(req: express.Request, res: express.Response, next: express.NextFunction) {

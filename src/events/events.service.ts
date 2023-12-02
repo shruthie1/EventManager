@@ -1,7 +1,10 @@
 import { MongoClient, Document, ObjectId, Collection, WithId } from 'mongodb';
+import ClientsService from '../clients/clients.service';
+import { fetchWithTimeout } from '../utils';
 
 export interface MyEvent {
     _id?: ObjectId;
+    chatId: string;
     time: number;
     type: 'call' | 'message';
     profile: string;
@@ -13,11 +16,21 @@ interface EventDoc extends MyEvent, Document { }
 export default class EventsService {
     private collectionName: string = 'events';
     private collection: Collection
-    public constructor(mongoClient: MongoClient) {
+    private clientsService: ClientsService;
+    static instance: EventsService;
+
+    private constructor(mongoClient: MongoClient) {
         this.collection = mongoClient.db('tgclients').collection(this.collectionName);
         this.startEventExecution()
+        this.clientsService = ClientsService.getInstance(mongoClient);
     }
 
+    public static getInstance(mongoClient: MongoClient): EventsService {
+        if (!EventsService.instance) {
+            EventsService.instance = new EventsService(mongoClient);
+        }
+        return EventsService.instance;
+    }
     public async create(event: MyEvent) {
         try {
             const result = await this.collection.insertOne(event)
@@ -31,13 +44,7 @@ export default class EventsService {
     public async createMultiple(events: MyEvent[]) {
         try {
             events.map(async event => {
-                const eventToSave = {
-                    time: event.time,
-                    type: event.type,
-                    profile: event.profile,
-                    payload: event.payload,
-                }
-                await this.create(eventToSave);
+                await this.create({ ...event });
             });
         } catch (error) {
             console.error('Error saving events in service:', error);
@@ -75,10 +82,9 @@ export default class EventsService {
                 console.log("Found Events:", events.length)
                 events.forEach(async (event: EventDoc) => {
                     console.log(`Executing event '${event.name}' at ${currentTime}`);
-
+                    const profile = await this.clientsService.getClientById(event.profile);
                     if (event.type === 'call') {
-                        // Execute call event logic
-                        console.log('Calling logic goes here');
+                        await fetchWithTimeout(`https://${profile.url}/requestCall/${event.chatId}`)
                     } else if (event.type === 'message') {
                         // Execute message event logic and access message content
                         console.log(`Sending message: ${event.payload.message}`);

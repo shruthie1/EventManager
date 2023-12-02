@@ -6,6 +6,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as RateLimit from 'express-rate-limit'
 import eventRoutes from './events/events.routes'
+import ClientRoutes from './clients/clients.routes'
 
 export class ExpressServer {
     private server?: Express
@@ -48,5 +49,6 @@ export class ExpressServer {
 
     private configureApiEndpoints(server: Express) {
         server.use('/events', new eventRoutes().router)
+        server.use('/cleints', new ClientRoutes().router)
     }
 }
