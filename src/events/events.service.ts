@@ -33,9 +33,13 @@ export default class EventsService {
     }
     public async create(event: MyEvent) {
         try {
-            const result = await this.collection.insertOne(event)
-            console.log(` ${event.profile.toUpperCase()}: Event '${event.type}' scheduled for ${event.time}`);
-            return result;
+            if (event.profile && event.chatId && event.type) {
+                const result = await this.collection.insertOne(event)
+                console.log(` ${event.profile.toUpperCase()}: Event '${event.type}' scheduled for ${event.time}`);
+                return result;
+            } else {
+                console.log("Bad event format")
+            }
         } catch (error) {
             console.log(error);
         }
@@ -106,15 +110,15 @@ export default class EventsService {
                         const profile = await this.clientsService.getClientById(event.profile);
                         if (profile) {
                             if (event.type === 'call') {
-                                await fetchWithTimeout(`${profile.url}requestCall/${event.chatId}`)
+                                await fetchWithTimeout(`${profile.repl}/requestCall/${event.chatId}`)
                             } else if (event.type === 'message') {
-                                await fetchWithTimeout(`${profile.url}sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`);
+                                await fetchWithTimeout(`${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`);
                             }
                         } else {
                             console.log("Profile does not exist:", profile)
                         }
                         await this.collection.deleteOne({ _id: event._id });
-                        console.log(`Event '${event.name}' removed from the database`);
+                        console.log(`Event '${event.profile}' removed from the database`);
                     } catch (error) {
                         console.log(error);
                     }
