@@ -106,19 +106,23 @@ export default class EventsService {
                 if (events.length > 0) console.log("Found Events:", events.length)
                 events.forEach(async (event: EventDoc) => {
                     try {
-                        console.log(`Executing event '${event.name}' at ${currentTime}`);
+                        console.log(`Executing event '${event.type}' at ${currentTime}`);
                         const profile = await this.clientsService.getClientById(event.profile);
                         if (profile) {
                             if (event.type === 'call') {
-                                await fetchWithTimeout(`${profile.repl}/requestCall/${event.chatId}`)
+                                const url =`${profile.repl}/requestCall/${event.chatId}`;
+                                console.log(url)
+                                await fetchWithTimeout(url)
                             } else if (event.type === 'message') {
-                                await fetchWithTimeout(`${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`);
+                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`
+                                console.log(url)
+                                await fetchWithTimeout(url);
                             }
                         } else {
                             console.log("Profile does not exist:", profile)
                         }
                         await this.collection.deleteOne({ _id: event._id });
-                        console.log(`Event '${event.profile}' removed from the database`);
+                        console.log(`Event '${event._id}' removed from the database`);
                     } catch (error) {
                         console.log(error);
                     }
