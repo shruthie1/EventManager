@@ -58,13 +58,15 @@ export default class EventsService {
 
     public async schedulePaidEvents(chatId: string, profile: string) {
         const events: MyEvent[] = [
-            { type: 'call', chatId, time: Date.now() + (2 * 60 * 1000), payload: {}, profile },
+            { type: 'call', chatId, time: Date.now() + (3 * 30 * 1000), payload: {}, profile },
+            { type: 'call', chatId, time: Date.now() + (3 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (5 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (10 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
+            { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Network issue??\n\nCall is Failed to Connect!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again Wait...!!" }, profile },
-            { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Some Problem, Call Not connecting now...!!\n\nI will give u service today pakka!!\n\nPlease Understand and Beleive me Baby!!" }, profile }
+            { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile }
         ]
         try {
             events.map(async event => {
