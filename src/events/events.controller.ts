@@ -21,6 +21,7 @@ export default class EventController {
     }
 
     async schedulePaidEvents(req: express.Request, res: express.Response, next: express.NextFunction) {
+        console.log("creating Request for ", req.query.chatId, req.query.profile)
         const events = await this.eventService.schedulePaidEvents(<string>req.query.chatId, <string>req.query.profile);
         res.send({ data: events });
     }

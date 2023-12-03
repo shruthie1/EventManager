@@ -37,7 +37,7 @@ export default class EventsService {
             console.log(` ${event.profile.toUpperCase()}: Event '${event.type}' scheduled for ${event.time}`);
             return result;
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 
@@ -48,7 +48,7 @@ export default class EventsService {
             });
         } catch (error) {
             console.error('Error saving events in service:', error);
-            throw error;
+            console.log(error);
         }
     }
 
@@ -68,9 +68,8 @@ export default class EventsService {
             });
         } catch (error) {
             console.error('Error saving events in service:', error);
-            throw error;
         }
-        return ({ message: `schedule events for ${profile} | Chatid: ${chatId}` })
+        return ({ message: `scheduled events for ${profile} | Chatid: ${chatId}` })
     }
 
     public async getEvents(filter: {}) {
@@ -79,7 +78,7 @@ export default class EventsService {
             console.log(result)
             return result;
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 
@@ -89,7 +88,7 @@ export default class EventsService {
             console.log(result)
             return result;
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 
@@ -102,22 +101,26 @@ export default class EventsService {
                 const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).toArray())
                 if (events.length > 0) console.log("Found Events:", events.length)
                 events.forEach(async (event: EventDoc) => {
-                    console.log(`Executing event '${event.name}' at ${currentTime}`);
-                    const profile = await this.clientsService.getClientById(event.profile);
-                    if (event.type === 'call') {
-                        await fetchWithTimeout(`${profile.url}requestCall/${event.chatId}`)
-                    } else if (event.type === 'message') {
-                        await fetchWithTimeout(`${profile.url}sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`);
-                    }
                     try {
+                        console.log(`Executing event '${event.name}' at ${currentTime}`);
+                        const profile = await this.clientsService.getClientById(event.profile);
+                        if (profile) {
+                            if (event.type === 'call') {
+                                await fetchWithTimeout(`${profile.url}requestCall/${event.chatId}`)
+                            } else if (event.type === 'message') {
+                                await fetchWithTimeout(`${profile.url}sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`);
+                            }
+                        } else {
+                            console.log("Profile does not exist:", profile)
+                        }
                         await this.collection.deleteOne({ _id: event._id });
                         console.log(`Event '${event.name}' removed from the database`);
                     } catch (error) {
-                        throw error;
+                        console.log(error);
                     }
                 })
             } catch (error) {
-                throw error;
+                console.log(error);
             }
         }, 60000);
     }

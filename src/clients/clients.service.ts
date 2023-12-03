@@ -23,7 +23,7 @@ export default class ClientsService {
             console.log(` ${event.profile.toUpperCase()}: Client '${event.type}' scheduled for ${event.time}`);
             return result;
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 
@@ -40,7 +40,7 @@ export default class ClientsService {
             });
         } catch (error) {
             console.error('Error saving events in service:', error);
-            throw error;
+            console.log(error);
         }
     }
 
@@ -50,7 +50,7 @@ export default class ClientsService {
             console.log(result)
             return result;
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 
@@ -64,7 +64,7 @@ export default class ClientsService {
                 throw new Error("Client Not found")
             }
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 }
