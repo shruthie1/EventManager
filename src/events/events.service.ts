@@ -64,7 +64,7 @@ export default class EventsService {
             { type: 'call', chatId, time: Date.now() + (10 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
-            { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Network issue??\n\nCall is Failed to Connect!!" }, profile },
+            { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: "Network issue??\n\nCall is Failed to Connect!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again Wait...!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile }
         ]
