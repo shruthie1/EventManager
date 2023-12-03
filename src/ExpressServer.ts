@@ -48,6 +48,7 @@ export class ExpressServer {
     }
 
     private configureApiEndpoints(server: Express) {
+        server.get('/',(_req, res)=>(res.send({data:"AllGood"})) )
         server.use('/events', new eventRoutes().router)
         server.use('/cleints', new ClientRoutes().router)
     }
