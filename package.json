@@ -9,7 +9,7 @@
   "scripts": {
     "start": "nodemon --watch src -e ts,tsx --ignore '*Spec.ts*' --ignore '*Test.ts*' --exec npm run server",
     "server": "ts-node src/index.ts",
-    "lib": "ls && node ../lib/index.js",
+    "lib": "ls && node lib/index.js",
     "prettier:check": "prettier --check src/**/*.{ts,tsx,jsx}",
     "prettier:write": "prettier --write src/**/*.{ts,tsx,jsx}",
     "test": "npm run prettier:check && npm run test:unit && npm audit",
