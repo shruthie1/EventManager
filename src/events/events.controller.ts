@@ -20,6 +20,11 @@ export default class EventController {
         res.send({ data: events });
     }
 
+    async schedulePaidEvents(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const events = await this.eventService.schedulePaidEvents(<string>req.query.chatId, <string>req.query.userName);
+        res.send({ data: events });
+    }
+
     async createMultiple(req: express.Request, res: express.Response, next: express.NextFunction) {
         const events = await this.eventService.createMultiple(req.body);
         res.send({ data: events });

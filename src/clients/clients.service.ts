@@ -61,7 +61,7 @@ export default class ClientsService {
             if (result) {
                 return result;
             } else {
-                throw new Error("Not found")
+                throw new Error("Client Not found")
             }
         } catch (error) {
             throw error;

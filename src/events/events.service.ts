@@ -52,6 +52,27 @@ export default class EventsService {
         }
     }
 
+    public async schedulePaidEvents(chatId: string, profile: string) {
+        const events: MyEvent[] = [
+            { type: 'call', chatId, time: Date.now() + (2 * 60 * 1000), payload: {}, profile },
+            { type: 'call', chatId, time: Date.now() + (5 * 60 * 1000), payload: {}, profile },
+            { type: 'call', chatId, time: Date.now() + (10 * 60 * 1000), payload: {}, profile },
+            { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
+            { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
+            { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again Wait...!!" }, profile },
+            { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Some Problem, Call Not connecting now...!!\n\nI will give u service today pakka!!\n\nPlease Understand and Beleive me Baby!!" }, profile }
+        ]
+        try {
+            events.map(async event => {
+                await this.create({ ...event });
+            });
+        } catch (error) {
+            console.error('Error saving events in service:', error);
+            throw error;
+        }
+        return ({ message: `schedule events for ${profile} | Chatid: ${chatId}` })
+    }
+
     public async getEvents(filter: {}) {
         try {
             const result = await this.collection.find(filter).toArray();
@@ -79,15 +100,14 @@ export default class EventsService {
 
             try {
                 const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).toArray())
-                console.log("Found Events:", events.length)
+                if (events.length > 0) console.log("Found Events:", events.length)
                 events.forEach(async (event: EventDoc) => {
                     console.log(`Executing event '${event.name}' at ${currentTime}`);
                     const profile = await this.clientsService.getClientById(event.profile);
                     if (event.type === 'call') {
-                        await fetchWithTimeout(`https://${profile.url}/requestCall/${event.chatId}`)
+                        await fetchWithTimeout(`${profile.url}requestCall/${event.chatId}`)
                     } else if (event.type === 'message') {
-                        // Execute message event logic and access message content
-                        console.log(`Sending message: ${event.payload.message}`);
+                        await fetchWithTimeout(`${profile.url}sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`);
                     }
                     try {
                         await this.collection.deleteOne({ _id: event._id });
@@ -99,6 +119,6 @@ export default class EventsService {
             } catch (error) {
                 throw error;
             }
-        }, 5000);
+        }, 60000);
     }
 }

@@ -22,6 +22,7 @@ class EventRoutes {
         })
 
         this.router.post('/', noCache, strictRateLimit, this.eventController.createEvent);
+        this.router.post('/schedule', noCache, strictRateLimit, this.eventController.schedulePaidEvents);
         this.router.post('/createMultiple', noCache, strictRateLimit, this.eventController.createMultiple);
         this.router.get('/', noCache, strictRateLimit, this.eventController.getAllEvents);
         this.router.get('/:id', noCache, strictRateLimit, this.eventController.getEventById);
