@@ -57,7 +57,6 @@ export default class ClientsService {
     public async getClientById(id: string) {
         try {
             const result = await this.collection.findOne({ clientId: id });
-            console.log(result)
             if (result) {
                 return result;
             } else {
