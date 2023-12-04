@@ -33,6 +33,7 @@ export class ExpressServer {
     }
 
     private setupStandardMiddlewares(server: Express) {
+        server.set('trust proxy', 1);
         server.use(bodyParser.json())
         server.use(cookieParser())
         server.use(compress())
