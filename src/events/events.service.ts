@@ -88,6 +88,15 @@ export default class EventsService {
         }
     }
 
+    public async pinger() {
+        try {
+            await fetchWithTimeout('https://tgcms.glitch.me/')
+            await fetchWithTimeout('https://arpithared.onrender.com/')
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     public async getEventById(id: string) {
         try {
             const result = await this.collection.findOne({ _id: new ObjectId(id) });
@@ -102,7 +111,6 @@ export default class EventsService {
         console.log("Started Event Execution");
         setInterval(async () => {
             const currentTime = Date.now();
-
             try {
                 const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).toArray())
                 if (events.length > 0) console.log("Found Events:", events.length)
@@ -132,6 +140,7 @@ export default class EventsService {
             } catch (error) {
                 console.log(error);
             }
+            this.pinger()
         }, 60000);
     }
 }
