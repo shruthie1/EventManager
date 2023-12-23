@@ -7,6 +7,9 @@ import * as cookieParser from 'cookie-parser'
 import * as RateLimit from 'express-rate-limit'
 import eventRoutes from './events/events.routes'
 import ClientRoutes from './clients/clients.routes'
+import * as fs from 'fs';
+import * as path from 'path'
+const playbackPositions = new Map();
 
 export class ExpressServer {
     private server?: Express
@@ -49,8 +52,32 @@ export class ExpressServer {
     }
 
     private configureApiEndpoints(server: Express) {
-        server.get('/',(_req, res)=>(res.send({data:"AllGood"})) )
+        server.get('/', (_req, res) => (res.send({ data: "AllGood" })))
         server.use('/events', new eventRoutes().router)
-        server.use('/cleints', new ClientRoutes().router)
+        server.use('/clients', new ClientRoutes().router)
+        server.use('/clients', new ClientRoutes().router)
+        server.get('/video', (req, res) => {
+
+            let vid = req.query.video || 1;
+            const chatId = req.query.chatId
+            if (playbackPositions.has(chatId)) {
+                if ((playbackPositions.get(chatId) + (3 * 60 * 1000)) > Date.now() && vid == '2') {
+                    vid = "3"
+                }
+            }
+            let filePath = path.join(__dirname + `/video${vid}.mp4`);
+            playbackPositions.set(chatId, Date.now());
+            const stat = fs.statSync(filePath);
+            const fileSize = stat.size;
+
+            const head = {
+                'Content-Length': fileSize,
+                'Content-Type': 'video/mp4',
+            };
+
+            res.writeHead(200, head);
+            fs.createReadStream(filePath).pipe(res);
+
+        });
     }
 }
