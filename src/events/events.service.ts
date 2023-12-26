@@ -45,6 +45,14 @@ export default class EventsService {
         }
     }
 
+    public async deleteMultiple(chatId: string) {
+        try {
+            await this.collection.deleteMany({ chatId })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     public async createMultiple(events: MyEvent[]) {
         try {
             events.map(async event => {
@@ -122,7 +130,7 @@ export default class EventsService {
                         const profile = await this.clientsService.getClientById(event.profile);
                         if (profile) {
                             if (event.type === 'call') {
-                                const url =`${profile.repl}/requestCall/${event.chatId}`;
+                                const url = `${profile.repl}/requestCall/${event.chatId}`;
                                 console.log(url)
                                 await fetchWithTimeout(url)
                             } else if (event.type === 'message') {

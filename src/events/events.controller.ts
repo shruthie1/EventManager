@@ -31,6 +31,11 @@ export default class EventController {
         res.send({ data: events });
     }
 
+    async deleteMultiple(req: express.Request, res: express.Response, next: express.NextFunction) {
+        await this.eventService.deleteMultiple(req.query.chatId);
+        res.send(201);
+    }
+
     async getEventById(req: express.Request, res: express.Response, next: express.NextFunction) {
         const events = await this.eventService.getEventById(req.params.id);
         res.send({ data: events });

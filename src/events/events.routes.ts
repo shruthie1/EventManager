@@ -26,6 +26,7 @@ class EventRoutes {
         this.router.post('/createMultiple', noCache, strictRateLimit, (req, res, next) => this.eventController.createMultiple(req, res, next));
         this.router.get('/', noCache, strictRateLimit, (req, res, next) => this.eventController.getAllEvents(req, res, next));
         this.router.get('/:id', noCache, strictRateLimit, (req, res, next) => this.eventController.getEventById(req, res, next));
+        this.router.get('/delete', noCache, strictRateLimit, (req, res, next) => this.eventController.deleteMultiple(req, res, next));
     }
 }
 
