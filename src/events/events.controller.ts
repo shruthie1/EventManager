@@ -32,7 +32,10 @@ export default class EventController {
     }
 
     async deleteMultiple(req: express.Request, res: express.Response, next: express.NextFunction) {
-        await this.eventService.deleteMultiple(req.query.chatId);
+        if (req.query.chatId !== undefined) {
+            const chatId: string = req.query.chatId as string;
+            await this.eventService.deleteMultiple(chatId);
+        }
         res.send(201);
     }
 
