@@ -9,6 +9,7 @@ import eventRoutes from './events/events.routes'
 import ClientRoutes from './clients/clients.routes'
 import * as fs from 'fs';
 import * as path from 'path'
+import * as cors  from 'cors'
 const playbackPositions = new Map();
 
 export class ExpressServer {
@@ -38,6 +39,7 @@ export class ExpressServer {
     private setupStandardMiddlewares(server: Express) {
         server.set('trust proxy', 1);
         server.use(bodyParser.json())
+        server.use(cors())
         server.use(cookieParser())
         server.use(compress())
         server.use(json());
