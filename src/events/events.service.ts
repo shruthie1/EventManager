@@ -152,6 +152,6 @@ export default class EventsService {
                 console.log(error);
             }
             this.pinger()
-        }, 10000);
+        }, 20000);
     }
 }
