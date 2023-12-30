@@ -17,7 +17,7 @@ export class Environment {
     }
 
     public static getPort(): number {
-        return 8000
+        return (process.env.PORT as unknown as number || 8000)
     }
 
     public static getVerticalName() {
