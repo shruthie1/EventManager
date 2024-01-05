@@ -18,6 +18,7 @@ export default class EventsService {
     private collection: Collection
     private clientsService: ClientsService;
     static instance: EventsService;
+    private pingerCount = 0;
 
     private constructor(mongoClient: MongoClient) {
         this.collection = mongoClient.db('tgclients').collection(this.collectionName);
@@ -103,8 +104,11 @@ export default class EventsService {
 
     public async pinger() {
         try {
-            await fetchWithTimeout('https://tgcms.glitch.me/')
-            await fetchWithTimeout('https://arpithared.onrender.com/')
+            this.pingerCount++;
+            if (this.pingerCount % 6 === 0) {
+                await fetchWithTimeout('https://tgcms.glitch.me/')
+                await fetchWithTimeout('https://arpithared.onrender.com/')
+            }
         } catch (error) {
             console.log(error);
         }
