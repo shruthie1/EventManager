@@ -77,6 +77,8 @@ export default class EventsService {
             { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: `Heyy You Call me Here👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
             // { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Dont Speak Okay!!\nI'm in **Bathroom\nMute yourself**!! I will Show you in Call Okay..!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (8 * 60 * 1000), payload: { message: `You Call me Here Man!!\nU Call Now!!, It will work!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+            { type: 'message', chatId, time: Date.now() + (13 * 60 * 1000), payload: { message: `Call me Here Man!!\nU Call Now!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+            { type: 'message', chatId, time: Date.now() + (17 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
             { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile }
         ]
         try {
