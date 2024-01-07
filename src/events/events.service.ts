@@ -73,6 +73,7 @@ export default class EventsService {
             { type: 'call', chatId, time: Date.now() + (12 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
             { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
+            { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: "Wait, I will Try Again!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (3.3 * 60 * 1000), payload: { message: "Network issue??\n\nCall is Failed to Connect!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (5.3 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again Wait sometime...!!" }, profile },
             { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: `Heyy You Call me Here👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
