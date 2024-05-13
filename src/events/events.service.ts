@@ -65,25 +65,39 @@ export default class EventsService {
         }
     }
 
-    public async schedulePaidEvents(chatId: string, profile: string) {
-        const events: MyEvent[] = [
-            { type: 'call', chatId, time: Date.now() + (1.5 * 60 * 1000), payload: {}, profile },
-            { type: 'call', chatId, time: Date.now() + (3 * 60 * 1000), payload: {}, profile },
-            { type: 'call', chatId, time: Date.now() + (5 * 60 * 1000), payload: {}, profile },
-            { type: 'call', chatId, time: Date.now() + (12 * 60 * 1000), payload: {}, profile },
-            { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
-            { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
-            { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: "Wait, I will Try Again!!" }, profile },
-            { type: 'message', chatId, time: Date.now() + (3.3 * 60 * 1000), payload: { message: "Network issue??\n\nCall is Failed to Connect!!" }, profile },
-            { type: 'message', chatId, time: Date.now() + (5.3 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again Wait sometime...!!" }, profile },
-            { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: `Heyy You Call me Here👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
-            // { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Dont Speak Okay!!\nI'm in **Bathroom\nMute yourself**!! I will Show you in Call Okay..!!" }, profile },
-            { type: 'message', chatId, time: Date.now() + (8 * 60 * 1000), payload: { message: `You Call me Here Man!!\nU Call Now!!, It will work!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
-            { type: 'message', chatId, time: Date.now() + (9 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
-            { type: 'message', chatId, time: Date.now() + (13 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
-            { type: 'message', chatId, time: Date.now() + (17 * 60 * 1000), payload: { message: `Call me Here Man!!\nU Call Now!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
-            { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile }
-        ]
+    public async schedulePaidEvents(chatId: string, profile: string, type: string = '1') {
+        let events: MyEvent[] = []
+        if (type == '1') {
+            events = [
+                { type: 'call', chatId, time: Date.now() + (1.5 * 60 * 1000), payload: {}, profile },
+                { type: 'call', chatId, time: Date.now() + (3 * 60 * 1000), payload: {}, profile },
+                { type: 'call', chatId, time: Date.now() + (5 * 60 * 1000), payload: {}, profile },
+                { type: 'call', chatId, time: Date.now() + (12 * 60 * 1000), payload: {}, profile },
+                { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
+                { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
+                { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: "Wait, I will Try Again!!" }, profile },
+                { type: 'message', chatId, time: Date.now() + (3.3 * 60 * 1000), payload: { message: "Network issue??\n\nCall is Failed to Connect!!" }, profile },
+                { type: 'message', chatId, time: Date.now() + (5.3 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again Wait sometime...!!" }, profile },
+                { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: `Heyy You Call me Here👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
+                // { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Dont Speak Okay!!\nI'm in **Bathroom\nMute yourself**!! I will Show you in Call Okay..!!" }, profile },
+                { type: 'message', chatId, time: Date.now() + (8 * 60 * 1000), payload: { message: `You Call me Here Man!!\nU Call Now!!, It will work!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+                { type: 'message', chatId, time: Date.now() + (9 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+                { type: 'message', chatId, time: Date.now() + (13 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+                { type: 'message', chatId, time: Date.now() + (17 * 60 * 1000), payload: { message: `Call me Here Man!!\nU Call Now!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+                { type: 'message', chatId, time: Date.now() + (16 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile }
+            ];
+        } else if (type == '2') {
+            events = [
+                { type: 'message', chatId, time: Date.now() + (1 * 60 * 1000), payload: { message: "Wait, I will Try Again!!" }, profile },
+                { type: 'call', chatId, time: Date.now() + (1.5 * 60 * 1000), payload: {}, profile },
+                { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Seems its not working at all,\n\nYou Call me Here Only👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
+            ]
+        }else {
+            events = [
+                { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+            ]
+        }
+
         try {
             events.map(async event => {
                 await this.create({ ...event });
