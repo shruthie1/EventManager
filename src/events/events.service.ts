@@ -123,7 +123,7 @@ export default class EventsService {
         try {
             this.pingerCount++;
             if (this.pingerCount % 13 == 1) {
-                await fetchWithTimeout('https://tgcms.glitch.me/', {}, true, 0)
+                await fetchWithTimeout('https://ramyaaa.onrender.com/', {}, true, 0)
                 await fetchWithTimeout('https://arpithared.onrender.com/')
             }
         } catch (error) {
