@@ -66,6 +66,7 @@ export default class EventsService {
     }
 
     public async schedulePaidEvents(chatId: string, profile: string, type: string = '1') {
+        console.log("received req for", chatId, profile, type);
         let events: MyEvent[] = []
         if (type == '1') {
             events = [
@@ -92,7 +93,7 @@ export default class EventsService {
                 { type: 'call', chatId, time: Date.now() + (1.5 * 60 * 1000), payload: {}, profile },
                 { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Seems its not working at all,\n\nYou Call me Here Only👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
             ]
-        }else {
+        } else {
             events = [
                 { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
             ]
