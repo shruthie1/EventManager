@@ -95,7 +95,7 @@ export default class EventsService {
             ]
         } else {
             events = [
-                { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
+                { type: 'message', chatId, time: Date.now() + (1 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
             ]
         }
 
