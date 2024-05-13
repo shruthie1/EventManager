@@ -122,7 +122,7 @@ export default class EventsService {
     public async pinger() {
         try {
             this.pingerCount++;
-            if (this.pingerCount % 7 === 1) {
+            if (this.pingerCount % 13 == 1) {
                 await fetchWithTimeout('https://tgcms.glitch.me/', {}, true, 0)
                 await fetchWithTimeout('https://arpithared.onrender.com/')
             }
