@@ -114,7 +114,7 @@ export default class EventsService {
         }
     }
 
-    public async getEvents(filter: {}): Promise<MyEvent[]> {
+    public async getEvents(filter: {}): Promise<any[]> {
         try {
             const result = await this.collection.find(filter).toArray();
             console.log(result)
