@@ -1,6 +1,6 @@
 import { MongoClient, Document, ObjectId, Collection, WithId } from 'mongodb';
 import ClientsService from '../clients/clients.service';
-import { fetchWithTimeout } from '../utils';
+import { fetchWithTimeout, sleep } from '../utils';
 
 export interface MyEvent {
     _id?: ObjectId;
@@ -11,7 +11,7 @@ export interface MyEvent {
     payload: any;
 }
 
-interface EventDoc extends MyEvent, Document { }
+interface EventDoc extends MyEvent, Document {}
 
 export default class EventsService {
     private collectionName: string = 'events';
@@ -49,14 +49,14 @@ export default class EventsService {
     public async createMultiple(events: MyEvent[]) {
         try {
             const validEvents = events.filter(event => event.profile && event.chatId && event.type);
-            
+
             if (validEvents.length > 0) {
                 const result = await this.collection.insertMany(validEvents);
-                
+
                 validEvents.forEach(event => {
                     console.log(` ${event.profile.toUpperCase()}: Event '${event.type}' scheduled for ${event.time}`);
                 });
-    
+
                 return result;
             } else {
                 console.log("No valid events to insert.");
@@ -96,7 +96,7 @@ export default class EventsService {
                     { type: 'message', chatId, time: Date.now() + (8 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}\n\nU only Call me on the Zoom!!` }, profile },
                     { type: 'message', chatId, time: Date.now() + (11 * 60 * 1000), payload: { message: `Call me Here Man!!\nU Call Now!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
                     { type: 'message', chatId, time: Date.now() + (13 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\n\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\n\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile },
-                
+
                     { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (15 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
@@ -114,10 +114,10 @@ export default class EventsService {
                     { type: 'message', chatId, time: Date.now() + (1 * 60 * 1000), payload: { message: "Wait, I will Try Again!!" }, profile },
                     { type: 'call', chatId, time: Date.now() + (1.5 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Seems its not working at all,\n\nYou Call me Here Only👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!\n` }, profile },
-                    
+
                     { type: 'call', chatId, time: Date.now() + (4 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (4 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-                    
+
                     { type: 'call', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
@@ -142,10 +142,10 @@ export default class EventsService {
             } else {
                 events = [
                     { type: 'message', chatId, time: Date.now() + (1 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-                   
+
                     { type: 'call', chatId, time: Date.now() + (4 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (4 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-                    
+
                     { type: 'call', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
@@ -166,7 +166,7 @@ export default class EventsService {
 
                     { type: 'call', chatId, time: Date.now() + (45 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (45 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-             
+
                 ]
             }
 
@@ -213,35 +213,39 @@ export default class EventsService {
         setInterval(async () => {
             const currentTime = Date.now();
             try {
-                const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).toArray())
-                if (events.length > 0) console.log("Found Events:", events.length)
-                events.forEach(async (event: EventDoc) => {
+                const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).sort({ time: 1 }).toArray());
+                if (events.length > 0) console.log("Found Events:", events.length);
+                for (const event of events) {
                     try {
                         console.log(`Executing event '${event.type}' at ${currentTime}`);
                         const profile = await this.clientsService.getClientById(event.profile);
+
                         if (profile) {
                             if (event.type === 'call') {
                                 const url = `${profile.repl}/requestCall/${event.chatId}`;
-                                console.log(url)
-                                await fetchWithTimeout(url)
+                                console.log(url);
+                                await fetchWithTimeout(url);
                             } else if (event.type === 'message') {
-                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`
-                                console.log(url)
+                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`;
+                                console.log(url);
                                 await fetchWithTimeout(url);
                             }
                         } else {
-                            console.log("Profile does not exist:", profile)
+                            console.log("Profile does not exist:", profile);
                         }
+
                         await this.collection.deleteOne({ _id: event._id });
                         console.log(`Event '${event._id}' removed from the database`);
                     } catch (error) {
                         console.log(error);
                     }
-                })
+                    await sleep(2000)
+                }
             } catch (error) {
                 console.log(error);
             }
-            this.pinger()
+            this.pinger();
         }, 20000);
     }
+
 }
