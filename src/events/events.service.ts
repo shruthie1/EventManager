@@ -98,18 +98,6 @@ export default class EventsService {
                     { type: 'message', chatId, time: Date.now() + (11 * 60 * 1000), payload: { message: `Call me Here Man!!\nU Call Now!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
                     { type: 'message', chatId, time: Date.now() + (13 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\n\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\n\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile },
                 
-                    { type: 'call', chatId, time: Date.now() + (4 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (4 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-                    
-                    { type: 'call', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-
-                    { type: 'call', chatId, time: Date.now() + (9 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (9 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-
-                    { type: 'call', chatId, time: Date.now() + (12 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (12 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
-
                     { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
                     { type: 'message', chatId, time: Date.now() + (15 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
