@@ -84,7 +84,7 @@ export default class EventsService {
                     { type: 'message', chatId, time: Date.now() + (3.1 * 60 * 1000), payload: { message: "Do you have any Network issue??\n\nCall is Failed to Connect!!" }, profile },
                     { type: 'message', chatId, time: Date.now() + (4.6 * 60 * 1000), payload: { message: "Some Network issue...!!\n\nDont worry, I will not cheat U!!\nI will try again!!\nPlease Wait...!!" }, profile },
                     { type: 'message', chatId, time: Date.now() + (5 * 60 * 1000), payload: { message: `Heyy You Call me Here👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!` }, profile },
-                    { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: "Dont Speak Okay!!\nI'm in **Bathroom\nMute yourself**!! I will Show you in Call Okay..!!" }, profile },
+                    { type: 'message', chatId, time: Date.now() + (4.8 * 60 * 1000), payload: { message: "Dont Speak Okay!!\nI'm in **Bathroom\nMute yourself**!! I will Show you in Call Okay..!!" }, profile },
                     { type: 'message', chatId, time: Date.now() + (6 * 60 * 1000), payload: { message: `You Call me Here Man!!\nU Call Now!!, It will work!!\n\nOpen👇👇\nhttps://ZomCall.netlify.app/${profile}/${chatId}` }, profile },
                     { type: 'message', chatId, time: Date.now() + (7 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me on the Zoom!!` }, profile },
                     { type: 'message', chatId, time: Date.now() + (8 * 60 * 1000), payload: { message: `https://ZomCall.netlify.app/${profile}/${chatId}\n\nU only Call me on the Zoom!!` }, profile },
