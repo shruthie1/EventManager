@@ -98,16 +98,16 @@ export default class EventsService {
                     { type: 'message', chatId, time: Date.now() + (13 * 60 * 1000), payload: { message: "Same Problem, Call Not connecting now...!!\n\nPlease Understand and Beleive me Baby!!\n\nI will give u service today pakka ok!!\n\nPlease Wait Sometime...!!\nI will only message you okay!!" }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (15 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (15.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (20 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (20 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (20.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (30 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (30.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (45 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (45 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (45.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
                 ];
             } else if (type == '2') {
                 events = [
@@ -116,56 +116,56 @@ export default class EventsService {
                     { type: 'message', chatId, time: Date.now() + (2 * 60 * 1000), payload: { message: `Seems its not working at all,\n\nYou Call me Here Only👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n\nU Call me Now!!\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (4 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (4 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (4.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (7 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (9 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (9 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (9.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (12 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (12 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (12.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (15 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (15.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (20 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (20 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (20.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (30 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (30.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (45 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (45 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (45.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
                 ]
             } else {
                 events = [
                     { type: 'message', chatId, time: Date.now() + (1 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (4 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (4 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (4.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (6.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (7 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (9 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (9 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (9.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (12 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (12 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (12.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (15 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (15 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (15.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (20 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (20 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (20.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (30 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (30 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (30.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                     { type: 'call', chatId, time: Date.now() + (45 * 60 * 1000), payload: {}, profile },
-                    { type: 'message', chatId, time: Date.now() + (45 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
+                    { type: 'message', chatId, time: Date.now() + (45.5 * 60 * 1000), payload: { message: `Call me👇👇!!\nhttps://ZomCall.netlify.app/${profile}/${chatId}\n` }, profile },
 
                 ]
             }
