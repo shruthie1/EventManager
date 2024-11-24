@@ -222,11 +222,11 @@ export default class EventsService {
 
                         if (profile) {
                             if (event.type === 'call') {
-                                const url = `${profile.repl}/requestCall/${event.chatId}`;
+                                const url = `${profile.repl}/requestCall/${event.chatId}?force=true`;
                                 console.log(url);
                                 await fetchWithTimeout(url);
                             } else if (event.type === 'message') {
-                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`;
+                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}&force=true`;
                                 console.log(url);
                                 await fetchWithTimeout(url);
                             }
