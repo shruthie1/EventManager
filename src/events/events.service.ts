@@ -226,7 +226,7 @@ export default class EventsService {
                                 console.log(url);
                                 await fetchWithTimeout(url);
                             } else if (event.type === 'message') {
-                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}&force=true`;
+                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`;
                                 console.log(url);
                                 await fetchWithTimeout(url);
                             }
