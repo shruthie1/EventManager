@@ -1,6 +1,7 @@
 import { MongoClient, Document, ObjectId, Collection, WithId } from 'mongodb';
 import ClientsService from '../clients/clients.service';
-import { fetchWithTimeout, sleep } from '../utils';
+import { fetchWithTimeout } from '../fetchWithTimeout';
+import { sleep } from '../utils';
 
 export interface MyEvent {
     _id?: ObjectId;
@@ -190,7 +191,6 @@ export default class EventsService {
         try {
             this.pingerCount++;
             if (this.pingerCount % 13 == 1) {
-                await fetchWithTimeout('https://tg-cms.onrender.com/', {}, true, 0)
                 await fetchWithTimeout('https://arpithared.onrender.com/')
             }
         } catch (error) {

@@ -7,6 +7,26 @@ import { Application } from './Application'
  * This is about to come later!
  */
 
-Application.createApplication().then(() => {
-    console.info('The application was started! Kill it using Ctrl + C')
+export async function getDataAndSetEnvVariables(url: string) {
+    try {
+        const response = await fetch(url);
+        const jsonData: any = await response.json();
+        for (const key in jsonData) {
+            process.env[key] = jsonData[key];
+        }
+        console.log('Environment variables set successfully!');
+    } catch (error) {
+        console.error('Error retrieving data or setting environment variables:', error);
+    }
+}
+
+async function setEnv() {
+    await getDataAndSetEnvVariables(`https://api.npoint.io/cc57d60feea67e47b6c4`);
+}
+
+setEnv().then(() => {
+    process.env['clientId'] = "EventManager";
+    Application.createApplication().then(() => {
+        console.info('The application was started! Kill it using Ctrl + C')
+    })
 })
