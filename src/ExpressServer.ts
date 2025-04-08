@@ -57,29 +57,40 @@ export class ExpressServer {
         server.get('/', (_req, res) => (res.send({ data: "AllGood" })))
         server.use('/events', new eventRoutes().router)
         server.use('/clients', new ClientRoutes().router)
-        server.use('/clients', new ClientRoutes().router)
         server.get('/video', (req, res) => {
+            try {
+                let vid = req.query.video || 1;
+                const chatId = req.query.chatId
+                if (playbackPositions.has(chatId)) {
+                    if ((playbackPositions.get(chatId) + (3 * 60 * 1000)) > Date.now() && vid == '2') {
+                        vid = "3"
+                    }
+                }
+                let filePath = path.join(__dirname + `/video${vid}.mp4`);
+                
+                // Check if the file exists before trying to read it
+                if (!fs.existsSync(filePath)) {
+                    console.error(`Video file not found: ${filePath}`);
+                    return res.status(404).send({ error: "Video not found" });
+                }
+                
+                playbackPositions.set(chatId, Date.now());
+                const stat = fs.statSync(filePath);
+                const fileSize = stat.size;
 
-            let vid = req.query.video || 1;
-            const chatId = req.query.chatId
-            if (playbackPositions.has(chatId)) {
-                if ((playbackPositions.get(chatId) + (3 * 60 * 1000)) > Date.now() && vid == '2') {
-                    vid = "3"
+                const head = {
+                    'Content-Length': fileSize,
+                    'Content-Type': 'video/mp4',
+                };
+
+                res.writeHead(200, head);
+                fs.createReadStream(filePath).pipe(res);
+            } catch (error) {
+                console.error('Error serving video:', error);
+                if (!res.headersSent) {
+                    res.status(500).send({ error: "Failed to stream video" });
                 }
             }
-            let filePath = path.join(__dirname + `/video${vid}.mp4`);
-            playbackPositions.set(chatId, Date.now());
-            const stat = fs.statSync(filePath);
-            const fileSize = stat.size;
-
-            const head = {
-                'Content-Length': fileSize,
-                'Content-Type': 'video/mp4',
-            };
-
-            res.writeHead(200, head);
-            fs.createReadStream(filePath).pipe(res);
-
         });
     }
 }
