@@ -12,7 +12,7 @@ export interface MyEvent {
     payload: any;
 }
 
-interface EventDoc extends MyEvent, Document {}
+interface EventDoc extends MyEvent, Document { }
 
 export default class EventsService {
     private collectionName: string = 'events';
@@ -219,23 +219,25 @@ export default class EventsService {
                     try {
                         console.log(`Executing event '${event.type}' at ${currentTime}`);
                         const profile = await this.clientsService.getClientById(event.profile);
-
+                        let result: any = null;
                         if (profile) {
                             if (event.type === 'call') {
                                 const url = `${profile.repl}/requestCall/${event.chatId}?force=true`;
                                 console.log(url);
-                                await fetchWithTimeout(url);
+                                result = await fetchWithTimeout(url);
                             } else if (event.type === 'message') {
                                 const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`;
                                 console.log(url);
-                                await fetchWithTimeout(url);
+                                result = await fetchWithTimeout(url);
                             }
                         } else {
                             console.log("Profile does not exist:", profile);
                         }
 
-                        await this.collection.deleteOne({ _id: event._id });
-                        console.log(`Event '${event._id}' removed from the database`);
+                        if (result) {
+                            await this.collection.deleteOne({ _id: event._id });
+                            console.log(`Event '${event._id}' removed from the database`);
+                        }
                     } catch (error) {
                         console.log(error);
                     }

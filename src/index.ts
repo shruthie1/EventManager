@@ -1,5 +1,7 @@
 require('dotenv').config();
 import { Application } from './Application'
+import { fetchWithTimeout } from './fetchWithTimeout';
+import { notifbot } from './logbots';
 
 /**
  * Entrypoint for bootstrapping and starting the application.
@@ -26,7 +28,8 @@ async function setEnv() {
 
 setEnv().then(() => {
     process.env['clientId'] = "EventManager";
-    Application.createApplication().then(() => {
+    Application.createApplication().then(async () => {
+        await fetchWithTimeout(`${notifbot()}&text=EventManager started!`);
         console.info('The application was started! Kill it using Ctrl + C')
     })
 })
