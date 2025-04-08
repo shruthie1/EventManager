@@ -2,6 +2,7 @@ require('dotenv').config();
 import { Application } from './Application'
 import { fetchWithTimeout } from './fetchWithTimeout';
 import { notifbot } from './logbots';
+import { parseError } from './parseError';
 
 /**
  * Entrypoint for bootstrapping and starting the application.
@@ -33,3 +34,14 @@ setEnv().then(() => {
         console.info('The application was started! Kill it using Ctrl + C')
     })
 })
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Application specific logging, throwing an error, or other logic here
+    fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=Unhandled Promise Rejection ${JSON.stringify(reason)}`);
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    parseError(error, "Uncaught Exception")
+});

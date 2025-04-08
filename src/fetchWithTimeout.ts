@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { extractMessage, parseError } from "./parseError";
 import { ppplbot } from "./logbots";
 import { sleep } from "./utils";
-import * as https from 'https';
 
 export async function fetchWithTimeout(
     url: string,
@@ -19,9 +18,15 @@ export async function fetchWithTimeout(
     let lastError: Error | null = null;
 
     console.log(`Trying: ${url}`);
-    const parsedUrl = new URL(url);
-    const host = parsedUrl.host;
-    const endpoint = parsedUrl.pathname + parsedUrl.search;
+    
+    try {
+        const parsedUrl = new URL(url);
+        var host = parsedUrl.host;
+        var endpoint = parsedUrl.pathname + parsedUrl.search;
+    } catch (error) {
+        console.error(`Invalid URL: ${url}`);
+        return undefined;
+    }
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
         const controller = new AbortController();
@@ -34,9 +39,7 @@ export async function fetchWithTimeout(
                 url,
                 signal: controller.signal,
                 maxRedirects: 5,
-                httpsAgent: new https.Agent({
-                    rejectUnauthorized: false
-                })
+                timeout: currentTimeout, // Use the increased timeout for axios request too
             });
             clearTimeout(timeoutId);
             return response;
@@ -103,10 +106,7 @@ async function makeBypassRequest(url: string, options: AxiosRequestConfig & { by
         responseType: options.responseType || 'json',
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
-        timeout: options.timeout || 30000,
-        httpsAgent: new https.Agent({
-            rejectUnauthorized: false
-        })
+        timeout: options.timeout || 30000
     });
 
     const response = await bypassAxios.post(options.bypassUrl, {
@@ -182,7 +182,12 @@ function notify(prefix: string, errorDetails: any) {
         }`;
 
     try {
-        axios.get(`${ppplbot(process.env.httpFailuresChannel)}&text=${encodeURIComponent(notificationText)}`);
+        // Add safety check for httpFailuresChannel
+        if (process.env.httpFailuresChannel) {
+            axios.get(`${ppplbot(process.env.httpFailuresChannel)}&text=${encodeURIComponent(notificationText)}`);
+        } else {
+            console.warn("Cannot send notification: httpFailuresChannel environment variable is not set");
+        }
     } catch (error) {
         console.error("Failed to notify failure:", error);
     }
