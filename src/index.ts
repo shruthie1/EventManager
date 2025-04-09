@@ -38,10 +38,10 @@ setEnv().then(() => {
 process.on('unhandledRejection', (reason, promise) => {
     console.log('Unhandled Rejection at:', promise, 'reason:', reason);
     // Application specific logging, throwing an error, or other logic here
-    fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=Unhandled Promise Rejection ${JSON.stringify(reason)}`);
+    fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=Unhandled Promise Rejection at Event Manager ${JSON.stringify(reason).slice(0, 100)}`);
 });
 
 process.on('uncaughtException', (error) => {
     console.error('Uncaught Exception:', error);
-    parseError(error, "Uncaught Exception")
+    parseError(error, "Uncaught Exception at Event Manager")
 });
