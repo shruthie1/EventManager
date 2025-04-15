@@ -237,6 +237,13 @@ export default class EventsService {
                         if (result) {
                             await this.collection.deleteOne({ _id: event._id });
                             console.log(`Event '${event._id}' removed from the database`);
+                        } else {
+                            const newTime = Date.now() + 30000;
+                            await this.collection.updateOne(
+                                { _id: event._id },
+                                { $set: { time: newTime } }
+                            );
+                            console.log(`Event '${event._id}' rescheduled for 40 seconds later (${new Date(newTime).toISOString()})`);
                         }
                     } catch (error) {
                         console.log(error);
