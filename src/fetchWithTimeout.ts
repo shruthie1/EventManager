@@ -342,7 +342,7 @@ export async function fetchWithTimeout(
 
                     await notifyInternal(
                         `Bypass attempt failed`,
-                        { message: `host=${host}\nendpoint=${endpoint}\n${`msg: ${errorDetails.slice(0, 150)}`}` },
+                        { message: `host=${host}\nendpoint=${endpoint}\n${`msg: ${errorDetails.slice(0, 150)}\nurl: ${url}`}` },
                         notificationConfig
                     );
                 }
