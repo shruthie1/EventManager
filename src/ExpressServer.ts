@@ -55,6 +55,7 @@ export class ExpressServer {
 
     private configureApiEndpoints(server: Express) {
         server.get('/', (_req, res) => (res.send({ data: "AllGood" })))
+        server.get('/exit', (_req, res) => {process.exit(1)})
         server.use('/events', new eventRoutes().router)
         server.use('/clients', new ClientRoutes().router)
         server.get('/video', (req, res) => {
