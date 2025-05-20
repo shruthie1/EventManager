@@ -324,7 +324,7 @@ export async function fetchWithTimeout(
                     const bypassResponse = await makeBypassRequest(url, options);
                     if (bypassResponse) {
                         await notifyInternal(
-                            `Successfully Bypassed the request`,
+                            `Successfully Bypassed ${parsedError.status} the request`,
                             { message: `${clientId} host=${host}\nendpoint=${endpoint}` },
                             notificationConfig
                         );
@@ -342,7 +342,7 @@ export async function fetchWithTimeout(
 
                     await notifyInternal(
                         `Bypass attempt failed`,
-                        { message: `host=${host}\nendpoint=${endpoint}\n${`msg: ${errorDetails.slice(0, 150)}\nurl: ${url}`}` },
+                        { message: `host=${host}\nendpoint=${endpoint}\n${`msg: ${errorDetails.slice(0, 250)}\nurl: ${url}`}` },
                         notificationConfig
                     );
                 }
