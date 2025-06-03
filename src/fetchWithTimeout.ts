@@ -147,7 +147,7 @@ async function makeBypassRequest(
 
     const finalBypassUrl = bypassUrl.startsWith('http') ?
         bypassUrl :
-        'https://ravishing-perception-production.up.railway.app/execute-request';
+        'https://server-production-d3a9.up.railway.app/execute-request';
 
     const bypassAxios = axios.create({
         responseType: options.responseType || 'json',
