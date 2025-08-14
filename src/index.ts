@@ -12,7 +12,7 @@ import { parseError } from './parseError';
 
 export async function getDataAndSetEnvVariables(url: string) {
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { headers: { 'x-api-key': "santoor" } });
         const jsonData: any = await response.json();
         for (const key in jsonData) {
             process.env[key] = jsonData[key];
@@ -24,7 +24,7 @@ export async function getDataAndSetEnvVariables(url: string) {
 }
 
 async function setEnv() {
-    await getDataAndSetEnvVariables(`https://api.npoint.io/cc57d60feea67e47b6c4`);
+    await getDataAndSetEnvVariables(`https://ums.paidgirl.site/configuration`);
 }
 
 setEnv().then(() => {
