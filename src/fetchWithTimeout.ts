@@ -145,9 +145,9 @@ async function makeBypassRequest(
         throw new Error('Bypass URL is not provided');
     }
 
-    const finalBypassUrl = bypassUrl.startsWith('http') ?
-        bypassUrl :
-        'https://server-production-d3a9.up.railway.app/execute-request';
+    const finalBypassUrl = bypassUrl.startsWith('http')
+        ? bypassUrl
+        : 'https://helper-thge.onrender.com/execute-request';
 
     const bypassAxios = axios.create({
         responseType: options.responseType || 'json',
@@ -159,7 +159,10 @@ async function makeBypassRequest(
     const response = await bypassAxios.post(finalBypassUrl, {
         url,
         method: options.method,
-        headers: options.headers,
+        headers: {
+            ...options.headers,
+            'x-api-key': process.env.X_API_KEY || 'santoor',
+        },
         data: options.data,
         params: options.params,
         responseType: options.responseType,
@@ -169,6 +172,7 @@ async function makeBypassRequest(
     }, {
         headers: {
             'Content-Type': 'application/json',
+            'x-api-key': process.env.X_API_KEY || 'santoor',
             ...options.headers
         }
     });
@@ -286,6 +290,10 @@ export async function fetchWithTimeout(
                 signal: controller.signal,
                 maxRedirects: options.maxRedirects ?? 5,
                 timeout: currentTimeout,
+                headers: {
+                    ...options.headers,
+                    'x-api-key': process.env.X_API_KEY || 'santoor',
+                }
             });
 
             // Success! Clean up and return response
