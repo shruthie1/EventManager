@@ -19,7 +19,7 @@ interface NotificationConfig {
 
 // Default configurations
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
-    maxRetries: 3,
+    maxRetries: 0,
     baseDelay: 500, // Start with 500ms
     maxDelay: 30000, // Cap at 30 seconds
     jitterFactor: 0.2, // Add up to 20% jitter
