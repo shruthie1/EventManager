@@ -67,11 +67,13 @@ export default class EventsService {
         }
     }
 
-    public async deleteMultiple(chatId: string) {
+    public async deleteMultiple(chatId: string): Promise<number> {
         try {
-            await this.collection.deleteMany({ chatId })
+            const result = await this.collection.deleteMany({ chatId })
+            return result.deletedCount;
         } catch (error) {
             console.log(error);
+            return 0;
         }
     }
 

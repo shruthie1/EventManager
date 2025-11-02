@@ -32,11 +32,12 @@ export default class EventController {
     }
 
     async deleteMultiple(req: express.Request, res: express.Response, next: express.NextFunction) {
-        if (req.query.chatId !== undefined) {
+        let entriesDeleted = 0;
+        if (req.query.chatId) {
             const chatId: string = req.query.chatId as string;
-            await this.eventService.deleteMultiple(chatId);
+            entriesDeleted = await this.eventService.deleteMultiple(chatId);
         }
-        res.send(201);
+        res.status(201).send({ status: "Deleted Sucessfully", entriesDeleted: entriesDeleted });
     }
 
     async getEventById(req: express.Request, res: express.Response, next: express.NextFunction) {
