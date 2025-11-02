@@ -246,11 +246,11 @@ export default class EventsService {
                         if (profile) {
                             console.log(`Profile found: ${profile.repl}`);
                             if (event.type === 'call') {
-                                const url = `${profile.repl}/requestCall/${event.chatId}?force=true`;
+                                const url = `${profile.repl}/requestCall/${event.chatId}?force=true&key=${Date.now()}`;
                                 console.log(`Calling: ${url}`);
                                 result = await fetchWithTimeout(url);
                             } else if (event.type === 'message') {
-                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`;
+                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}&key=${Date.now()}`;
                                 console.log(`Sending: ${url}`);
                                 result = await fetchWithTimeout(url);
                             }
