@@ -7,20 +7,25 @@ import * as cookieParser from 'cookie-parser'
 import * as RateLimit from 'express-rate-limit'
 import eventRoutes from './events/events.routes'
 import ClientRoutes from './clients/clients.routes'
-import * as fs from 'fs';
+import * as fs from 'fs'
 import * as path from 'path'
-import * as cors  from 'cors'
+import * as cors from 'cors'
+
 const playbackPositions = new Map();
 
 export class ExpressServer {
     private server?: Express
     private httpServer?: Server
+    private lastActivityTime: number = Date.now()
+    private inactivityInterval?: NodeJS.Timeout
+
     constructor() { }
 
     public async setup(port: number) {
         const server = express()
         this.setupStandardMiddlewares(server)
         this.configureApiEndpoints(server)
+        this.setupInactivityWatcher()
 
         this.httpServer = this.listen(server, port)
         this.server = server
@@ -34,64 +39,87 @@ export class ExpressServer {
 
     public kill() {
         if (this.httpServer) this.httpServer.close()
+        if (this.inactivityInterval) clearInterval(this.inactivityInterval)
     }
 
     private setupStandardMiddlewares(server: Express) {
-        server.set('trust proxy', 1);
+        server.set('trust proxy', 1)
         server.use(bodyParser.json())
         server.use(cors())
         server.use(cookieParser())
         server.use(compress())
-        server.use(json());
-        server.use(urlencoded({ extended: true }));
+        server.use(json())
+        server.use(urlencoded({ extended: true }))
 
         const baseRateLimitingOptions = {
-            windowMs: 15 * 60 * 1000, // 15 min in ms
+            windowMs: 15 * 60 * 1000, // 15 min
             max: 1000,
-            message: 'Our API is rate limited to a maximum of 1000 requests per 15 minutes, please lower your request rate'
+            message: 'API limited to 1000 requests per 15 minutes'
         }
         server.use('/', RateLimit.default(baseRateLimitingOptions))
+
+        // Update activity time for any incoming request
+        server.use((req, _res, next) => {
+            next()
+        })
     }
 
     private configureApiEndpoints(server: Express) {
-        server.get('/', (_req, res) => (res.send({ data: "AllGood" })))
-        server.get('/exit', (_req, res) => {process.exit(1)})
+        server.get('/', (_req, res) => res.send({ data: "AllGood" }))
+
+        server.get('/exit', (_req, res) => {
+            res.send({ message: "Exiting process manually" })
+            process.exit(1)
+        })
+
         server.use('/events', new eventRoutes().router)
         server.use('/clients', new ClientRoutes().router)
+
         server.get('/video', (req, res) => {
             try {
-                let vid = req.query.video || 1;
+                let vid = req.query.video || 1
                 const chatId = req.query.chatId
                 if (playbackPositions.has(chatId)) {
                     if ((playbackPositions.get(chatId) + (3 * 60 * 1000)) > Date.now() && vid == '2') {
                         vid = "3"
                     }
                 }
-                let filePath = path.join(__dirname + `/video${vid}.mp4`);
-                
-                // Check if the file exists before trying to read it
+
+                const filePath = path.join(__dirname, `video${vid}.mp4`)
                 if (!fs.existsSync(filePath)) {
-                    console.error(`Video file not found: ${filePath}`);
-                    return res.status(404).send({ error: "Video not found" });
+                    console.error(`Video file not found: ${filePath}`)
+                    return res.status(404).send({ error: "Video not found" })
                 }
-                
-                playbackPositions.set(chatId, Date.now());
-                const stat = fs.statSync(filePath);
-                const fileSize = stat.size;
+
+                playbackPositions.set(chatId, Date.now())
+                const stat = fs.statSync(filePath)
+                const fileSize = stat.size
 
                 const head = {
                     'Content-Length': fileSize,
                     'Content-Type': 'video/mp4',
-                };
+                }
 
-                res.writeHead(200, head);
-                fs.createReadStream(filePath).pipe(res);
+                res.writeHead(200, head)
+                fs.createReadStream(filePath).pipe(res)
             } catch (error) {
-                console.error('Error serving video:', error);
+                console.error('Error serving video:', error)
                 if (!res.headersSent) {
-                    res.status(500).send({ error: "Failed to stream video" });
+                    res.status(500).send({ error: "Failed to stream video" })
                 }
             }
-        });
+        })
+    }
+
+    private setupInactivityWatcher() {
+        const TEN_MINUTES = 10 * 60 * 1000
+
+        this.inactivityInterval = setInterval(() => {
+            const timeSinceLastActivity = Date.now() - this.lastActivityTime
+            if (timeSinceLastActivity > TEN_MINUTES) {
+                console.warn(`No requests in the last 10 minutes. Exiting process...`)
+                process.exit(0)
+            }
+        }, 60 * 1000) // check every minute
     }
 }
