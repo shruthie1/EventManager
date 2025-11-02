@@ -24,8 +24,9 @@ export default class EventsService {
 
     private constructor(mongoClient: MongoClient) {
         this.collection = mongoClient.db('tgclients').collection(this.collectionName);
-        this.startEventExecution()
+        // Minor: Init clientsService before starting interval to ensure readiness
         this.clientsService = ClientsService.getInstance(mongoClient);
+        this.startEventExecution();
     }
 
     public static getInstance(mongoClient: MongoClient): EventsService {
@@ -194,6 +195,8 @@ export default class EventsService {
         try {
             this.pingerCount++;
             if (this.pingerCount % 13 == 1) {
+                // Add log for debugging pings
+                console.log('Pinging to keep awake...');
                 await fetchWithTimeout('https://arpithared.onrender.com/')
             }
         } catch (error) {
@@ -215,30 +218,39 @@ export default class EventsService {
         console.log("Started Event Execution");
         if (this.intervalId) {
             clearInterval(this.intervalId);
-            sleep(2000);
         }
+        // Removed sleep(2000) here—unnecessary in constructor; interval starts immediately
         this.intervalId = setInterval(async () => {
             const currentTime = Date.now();
+            // Add log for interval runs
+            console.log(`Interval tick at ${currentTime} - checking for overdue events`);
             try {
                 const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).sort({ time: 1 }).toArray());
-                if (events.length > 0) console.log("Found Events:", events.length);
+                if (events.length > 0) {
+                    console.log(`Found ${events.length} overdue events`);
+                } else {
+                    console.log('No overdue events found');
+                }
                 for (const event of events) {
+                    let success = false;
                     try {
-                        console.log(`Executing event '${event.type}' at ${currentTime}`);
+                        console.log(`Executing event '${event.type}' (ID: ${event._id}) at ${currentTime} for profile ${event.profile}`);
                         const profile = await this.clientsService.getClientById(event.profile);
                         let result: any = null;
                         if (profile) {
+                            console.log(`Profile found: ${profile.repl}`);
                             if (event.type === 'call') {
                                 const url = `${profile.repl}/requestCall/${event.chatId}?force=true`;
-                                console.log(url);
+                                console.log(`Calling: ${url}`);
                                 result = await fetchWithTimeout(url);
                             } else if (event.type === 'message') {
                                 const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}`;
-                                console.log(url);
+                                console.log(`Sending: ${url}`);
                                 result = await fetchWithTimeout(url);
                             }
+
                         } else {
-                            console.log("Profile does not exist:", profile);
+                            console.log(`Profile does not exist for ${event.profile}`);
                         }
 
                         if (result) {
@@ -250,18 +262,30 @@ export default class EventsService {
                                 { _id: event._id },
                                 { $set: { time: newTime } }
                             );
-                            console.log(`Event '${event._id}' rescheduled for 40 seconds later (${new Date(newTime).toISOString()})`);
+                            console.log(`Event '${event._id}' rescheduled for ${new Date(newTime).toISOString()} (30s delay)`);
                         }
                     } catch (error) {
-                        console.log(error);
+                        console.error(`Error executing event '${event._id}':`, error);
+                        // FIX: Reschedule on throw (e.g., network/timeout error)
+                        success = false;
                     }
-                    await sleep(2000)
+
+                    // If !success, ensure reschedule (covers both falsy result and catch)
+                    if (!success) {
+                        const newTime = Date.now() + 30000;
+                        await this.collection.updateOne(
+                            { _id: event._id },
+                            { $set: { time: newTime } }
+                        );
+                        console.log(`Event '${event._id}' rescheduled due to failure for ${new Date(newTime).toISOString()}`);
+                    }
+
+                    await sleep(2000);
                 }
             } catch (error) {
-                console.log(error);
+                console.error('Error in event loop:', error);
             }
-            this.pinger();
+            await this.pinger();  // Await to ensure it runs
         }, 20000);
     }
-
 }
