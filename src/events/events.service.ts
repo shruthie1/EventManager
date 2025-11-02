@@ -21,6 +21,7 @@ export default class EventsService {
     private intervalId?: NodeJS.Timeout;
     static instance: EventsService;
     private pingerCount = 0;
+    private isProcessing: boolean = false;
 
     private constructor(mongoClient: MongoClient) {
         this.collection = mongoClient.db('tgclients').collection(this.collectionName);
@@ -219,11 +220,16 @@ export default class EventsService {
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
-        // Removed sleep(2000) here—unnecessary in constructor; interval starts immediately
         this.intervalId = setInterval(async () => {
+            // FIX: Skip if already processing to prevent overlaps
+            if (this.isProcessing) {
+                console.log('Skipping tick: already processing events');
+                return;
+            }
+
             const currentTime = Date.now();
-            // Add log for interval runs
             console.log(`Interval tick at ${currentTime} - checking for overdue events`);
+            this.isProcessing = true;  // Lock
             try {
                 const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).sort({ time: 1 }).toArray());
                 if (events.length > 0) {
@@ -280,10 +286,12 @@ export default class EventsService {
                         console.log(`Event '${event._id}' rescheduled due to failure for ${new Date(newTime).toISOString()}`);
                     }
 
-                    await sleep(2000);
+                    await sleep(1000);  // Reduced to 1s; remove if no rate limit issues
                 }
             } catch (error) {
                 console.error('Error in event loop:', error);
+            } finally {
+                this.isProcessing = false;  // Unlock
             }
             await this.pinger();  // Await to ensure it runs
         }, 20000);
