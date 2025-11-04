@@ -246,13 +246,29 @@ export default class EventsService {
                         if (profile) {
                             console.log(`Profile found: ${profile.repl}`);
                             if (event.type === 'call') {
-                                const url = `${profile.repl}/requestCall/${event.chatId}?force=true&key=${Date.now()}`;
-                                console.log(`Calling: ${url}`);
-                                result = await fetchWithTimeout(url);
+                                try {
+                                    // Use URL to safely construct queries (handles trailing slashes and encoding)
+                                    const urlObj = new URL(`/requestCall/${event.chatId}`, profile.repl);
+                                    urlObj.searchParams.set('force', 'true');
+                                    urlObj.searchParams.set('key', String(Date.now()));
+                                    const url = urlObj.toString();
+                                    console.log(`Calling: ${url}`);
+                                    result = await fetchWithTimeout(url);
+                                } catch (err) {
+                                    console.error('Invalid profile.repl URL for call:', profile.repl, err);
+                                }
                             } else if (event.type === 'message') {
-                                const url = `${profile.repl}/sendMessage/${event.chatId}?msg=${encodeURIComponent(event.payload.message)}&key=${Date.now()}`;
-                                console.log(`Sending: ${url}`);
-                                result = await fetchWithTimeout(url);
+                                try {
+                                    const urlObj = new URL(`/sendMessage/${event.chatId}`, profile.repl);
+                                    // msg may contain special characters, URLSearchParams will encode them
+                                    urlObj.searchParams.set('msg', event.payload?.message || '');
+                                    urlObj.searchParams.set('key', String(Date.now()));
+                                    const url = urlObj.toString();
+                                    console.log(`Sending: ${url}`);
+                                    result = await fetchWithTimeout(url);
+                                } catch (err) {
+                                    console.error('Invalid profile.repl URL for message:', profile.repl, err);
+                                }
                             }
 
                         } else {
