@@ -73,7 +73,7 @@ export default class EventsService {
     public async deleteMultiple(chatId: string): Promise<number> {
         try {
             const result = await this.collection.deleteMany({ chatId })
-            return result.deletedCount;
+            return result?.deletedCount;
         } catch (error) {
             console.log(error);
             return 0;
