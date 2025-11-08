@@ -13,7 +13,7 @@ import * as cors from 'cors'
 import { fetchWithTimeout } from './fetchWithTimeout'
 import { notifbot } from './logbots'
 
-const playbackPositions = new Map();
+const playbackPositions = new Map()
 
 export class ExpressServer {
     private server?: Express
@@ -52,16 +52,8 @@ export class ExpressServer {
         server.use(compress())
         server.use(json())
         server.use(urlencoded({ extended: true }))
-
-        const baseRateLimitingOptions = {
-            windowMs: 15 * 60 * 1000, // 15 min
-            max: 1000,
-            message: 'API limited to 1000 requests per 15 minutes'
-        }
-        server.use('/', RateLimit.default(baseRateLimitingOptions))
-
-        // Update activity time for any incoming request
         server.use((req, _res, next) => {
+            this.lastActivityTime = Date.now()
             next()
         })
     }
@@ -71,7 +63,7 @@ export class ExpressServer {
 
         server.get('/exit', async (_req, res) => {
             res.send({ message: "Exiting process manually" })
-            await fetchWithTimeout(`${notifbot()}&text=EventManager exiting process manually!`);
+            await fetchWithTimeout(`${notifbot()}&text=EventManager exiting process manually!`)
             process.exit(1)
         })
 
@@ -82,8 +74,11 @@ export class ExpressServer {
             try {
                 let vid = req.query.video || 1
                 const chatId = req.query.chatId
-                if (playbackPositions.has(chatId)) {
-                    if ((playbackPositions.get(chatId) + (3 * 60 * 1000)) > Date.now() && vid == '2') {
+
+                // Handle video playback switching
+                if (chatId && playbackPositions.has(chatId)) {
+                    const lastPlay = playbackPositions.get(chatId)!
+                    if ((lastPlay + (3 * 60 * 1000)) > Date.now() && vid == '2') {
                         vid = "3"
                     }
                 }
@@ -95,6 +90,7 @@ export class ExpressServer {
                 }
 
                 playbackPositions.set(chatId, Date.now())
+
                 const stat = fs.statSync(filePath)
                 const fileSize = stat.size
 
@@ -120,8 +116,8 @@ export class ExpressServer {
         this.inactivityInterval = setInterval(async () => {
             const timeSinceLastActivity = Date.now() - this.lastActivityTime
             if (timeSinceLastActivity > TEN_MINUTES) {
-                console.warn(`No requests in the last 10 minutes. Exiting process...`)
-                await fetchWithTimeout(`${notifbot()}&text=EventManager exiting due to inactivity!`);
+                console.warn(`⚠️ No requests in the last 10 minutes. Exiting process...`)
+                await fetchWithTimeout(`${notifbot()}&text=EventManager exiting due to inactivity!`)
                 process.exit(0)
             }
         }, 60 * 1000) // check every minute
