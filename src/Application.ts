@@ -1,6 +1,8 @@
 import { ExpressServer } from './ExpressServer'
 import { Environment } from './Environment'
 import MongoDB from './mongodb'
+import { notifbot } from './logbots';
+import { fetchWithTimeout } from './fetchWithTimeout';
 
 export class Application {
     public static async createApplication() {
@@ -42,13 +44,15 @@ export class Application {
     private static shutdownProperly(exitCode: number, express: ExpressServer) {
         Promise.resolve()
             .then(() => express.kill())
-            .then(() => {
+            .then(async () => {
                 MongoDB.getInstance().client.close(true);
                 console.info('Shutdown complete')
+                await fetchWithTimeout(`${notifbot()}&text=EventManager stopped!`);
                 process.exit(exitCode)
             })
-            .catch(err => {
+            .catch(async err => {
                 console.error('Error during shutdown', err)
+                await fetchWithTimeout(`${notifbot()}&text=EventManager crashed!`);
                 process.exit(1)
             })
     }

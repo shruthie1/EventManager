@@ -10,6 +10,8 @@ import ClientRoutes from './clients/clients.routes'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as cors from 'cors'
+import { fetchWithTimeout } from './fetchWithTimeout'
+import { notifbot } from './logbots'
 
 const playbackPositions = new Map();
 
@@ -67,8 +69,9 @@ export class ExpressServer {
     private configureApiEndpoints(server: Express) {
         server.get('/', (_req, res) => res.send({ data: "AllGood" }))
 
-        server.get('/exit', (_req, res) => {
+        server.get('/exit', async (_req, res) => {
             res.send({ message: "Exiting process manually" })
+            await fetchWithTimeout(`${notifbot()}&text=EventManager exiting process manually!`);
             process.exit(1)
         })
 
@@ -114,10 +117,11 @@ export class ExpressServer {
     private setupInactivityWatcher() {
         const TEN_MINUTES = 10 * 60 * 1000
 
-        this.inactivityInterval = setInterval(() => {
+        this.inactivityInterval = setInterval(async () => {
             const timeSinceLastActivity = Date.now() - this.lastActivityTime
             if (timeSinceLastActivity > TEN_MINUTES) {
                 console.warn(`No requests in the last 10 minutes. Exiting process...`)
+                await fetchWithTimeout(`${notifbot()}&text=EventManager exiting due to inactivity!`);
                 process.exit(0)
             }
         }, 60 * 1000) // check every minute

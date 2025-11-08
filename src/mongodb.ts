@@ -1,4 +1,6 @@
 import { MongoClient, Db, ServerApiVersion, ConnectOptions } from 'mongodb';
+import { notifbot } from './logbots';
+import { fetchWithTimeout } from './fetchWithTimeout';
 
 class MongoDB {
     private static instance: MongoDB;
@@ -16,6 +18,7 @@ class MongoDB {
             return client;
         } catch (error) {
             console.error('Failed to connect to MongoDB:', error);
+            await fetchWithTimeout(`${notifbot()}&text=EventManager failed to connect to MongoDB!`);
             process.exit(1);
         }
     }
