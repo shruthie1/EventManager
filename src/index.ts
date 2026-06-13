@@ -24,7 +24,7 @@ export async function getDataAndSetEnvVariables(url: string) {
 }
 
 async function setEnv() {
-    await getDataAndSetEnvVariables(`https://ums.paidgirl.site/configuration`);
+    await getDataAndSetEnvVariables(`https://ums.paidgirls.site/configuration`);
 }
 
 setEnv().then(() => {
