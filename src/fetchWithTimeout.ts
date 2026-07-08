@@ -18,8 +18,11 @@ interface NotificationConfig {
 }
 
 // Default configurations
+// Hard upper bound on retries for any request, regardless of caller override
+const MAX_RETRIES_LIMIT = 3;
+
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
-    maxRetries: 0,
+    maxRetries: 3,
     baseDelay: 500, // Start with 500ms
     maxDelay: 30000, // Cap at 30 seconds
     jitterFactor: 0.2, // Add up to 20% jitter
@@ -98,12 +101,23 @@ const RETRYABLE_NETWORK_ERRORS = [
 const RETRYABLE_STATUS_CODES = [408, 500, 502, 503, 504];
 
 /**
+ * HTTP status codes that must never trigger a retry, even if a network
+ * error or timeout condition also matches
+ */
+const NON_RETRYABLE_STATUS_CODES = [404];
+
+/**
  * Determines if an error should trigger a retry
  * @param error - The axios error
  * @param parsedError - Parsed error with status code
  * @returns boolean indicating whether to retry the request
  */
 function shouldRetry(error: unknown, parsedError: { status: number }): boolean {
+    // Never retry explicitly non-retryable statuses (e.g. 404)
+    if (NON_RETRYABLE_STATUS_CODES.includes(parsedError.status)) {
+        return false;
+    }
+
     if (axios.isAxiosError(error)) {
         if (error.code && RETRYABLE_NETWORK_ERRORS.includes(error.code)) {
             return true;
@@ -240,10 +254,15 @@ export async function fetchWithTimeout(
     }
 
     // Merge default and custom configurations
+    const requestedMaxRetries = maxRetries !== undefined
+        ? maxRetries
+        : (options.retryConfig?.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries);
+
     const retryConfig: RetryConfig = {
         ...DEFAULT_RETRY_CONFIG,
         ...options.retryConfig,
-        maxRetries: maxRetries !== undefined ? maxRetries : (options.retryConfig?.maxRetries || DEFAULT_RETRY_CONFIG.maxRetries)
+        // Clamp to [0, MAX_RETRIES_LIMIT] so no caller can exceed the hard cap
+        maxRetries: Math.max(0, Math.min(requestedMaxRetries, MAX_RETRIES_LIMIT))
     };
 
     const notificationConfig: NotificationConfig = {
