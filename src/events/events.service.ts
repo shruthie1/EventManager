@@ -231,7 +231,11 @@ export default class EventsService {
             console.log(`Interval tick at ${currentTime} - checking for overdue events`);
             this.isProcessing = true;  // Lock
             try {
-                const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime } }).sort({ time: 1 }).toArray());
+                // Only process OLD-schema events (keyed on `profile`). NEW event types are
+                // keyed on `clientId` and are executed in-process by tg-platform's @tg/events
+                // scheduler — this standalone loop must NOT touch them (it reads `profile`, which
+                // is undefined on new events, and would sabotage them by rescheduling/dropping).
+                const events: WithId<EventDoc>[] = <WithId<EventDoc>[]>(await this.collection.find({ time: { $lte: currentTime }, profile: { $exists: true } }).sort({ time: 1 }).toArray());
                 if (events.length > 0) {
                     console.log(`Found ${events.length} overdue events`);
                 } else {
